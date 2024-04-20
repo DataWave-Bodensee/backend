@@ -2,17 +2,13 @@ from openai import OpenAI
 import json
 from webscraper.db_parameters import llm_tool, db_params
 from database.db_operations import insert_article
+from sqlalchemy.dialects.postgresql import ARRAY
 
-def _create_db_entry(args_from_llm, article, response_message_summary):
+def _create_db_entry(args_from_llm, article, summary):
     """Creates a new entry in the database."""
-    print(
-        "Creating a new database entry...",
-        args_from_llm,
-        article.title,
-        article.published,
-        response_message_summary,
-    )
     entry = {
+        "title": article.title,
+        "summary": summary, 
         "website": article.link,
         "content": article.content,
         "keywords": article.keywords,

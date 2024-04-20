@@ -58,6 +58,8 @@ def create_articles_table():
     create_articles_table_sql = """
     CREATE TABLE articles (
     article_id SERIAL PRIMARY KEY,
+    title VARCHAR(255),
+    summary TEXT,
     website VARCHAR(2048),  -- URL of the website
     content TEXT,           -- Content of the website URL
     keywords TEXT[],        -- List of keywords, using PostgreSQL array type
@@ -136,10 +138,10 @@ def insert_article(article):
         cursor = conn.cursor()
         cursor.execute(
             """
-            INSERT INTO articles (website, content, keywords, date, number_dead, number_missing, number_survivors, country_of_origin, region_of_origin, cause_of_death, region_of_incident, country_of_incident, location_of_incident, latitude, longitude) 
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO articles (title, summary, website, content, keywords, date, number_dead, number_missing, number_survivors, country_of_origin, region_of_origin, cause_of_death, region_of_incident, country_of_incident, location_of_incident, latitude, longitude) 
+            VALUES (%s,%s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """, 
-            (article['website'], article['content'], article['keywords'], article['date'], article['number_dead'], article['number_missing'], article['number_survivors'], article['country_of_origin'], article['region_of_origin'], article['cause_of_death'], article['region_of_incident'], article['country_of_incident'], article['location_of_incident'], article['latitude'], article['longitude'])
+            (article['title'], article['summary'], article['website'], article['content'], article['keywords'], article['date'], article['number_dead'], article['number_missing'], article['number_survivors'], article['country_of_origin'], article['region_of_origin'], article['cause_of_death'], article['region_of_incident'], article['country_of_incident'], article['location_of_incident'], article['latitude'], article['longitude'])
         )
         conn.commit()
         print("Record inserted successfully")
@@ -216,6 +218,8 @@ def get_all_incidents():
 
 # write dummy data for a sigle article
 article = {
+    'title': 'Migrant boat capsizes in Mediterranean',
+    'summary': '20 migrants drown after their boat capsizes in the Mediterranean Sea',
     'website': 'https://www.bbc.com/news/world-africa-57033012',
     'content': 'The content of the article',
     'keywords': ['migrant', 'drown', 'boat'],
@@ -233,4 +237,5 @@ article = {
     'longitude': 12.4964
 }
 
-insert_article(article)
+#insert_article(article)
+#insert_incident(incident)

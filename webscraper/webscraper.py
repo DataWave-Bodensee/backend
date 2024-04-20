@@ -3,6 +3,7 @@ import newspaper
 import datetime
 import pandas as pd
 from webscraper.llm import llm_create_db_entry
+import ast
 
 
 def get_news_websites(search):
@@ -116,11 +117,11 @@ def load_articles():
     print('Loading articles from csv...')
     articles = pd.read_csv('articles.csv')
     return articles
-
 def load_filtered_articles():
     # Load the articles from the csv file
     print('Loading articles from csv...')
     articles = pd.read_csv('articles_filtered.csv')
+    articles['keywords'] = articles['keywords'].apply(ast.literal_eval)  # Convert string representation of keywords back to list
     return articles
 
 def filter_and_save(articles):

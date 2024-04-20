@@ -10,18 +10,18 @@ llm_tool = [{
                 "Region of Incident": {"type": "string", "description": ""},
                 "Incident Date": {
                     "type": "string",
-                    "description": "estimated date of death",
+                    "description": "estimated date of death format: YYYY-MM-DD",
                 },
                 "Number of Dead": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "total number of dead people",
                 },
                 "Number of Missing": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "total number of those who are missing and are thus assumed to be dead",
                 },
                 "Number of Survivors": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "number of migrants that survived the incident",
                 },
                 "Country of Origin": {
@@ -49,11 +49,11 @@ llm_tool = [{
                     "description": "Place where the death(s) occurred or where the body or bodies were found. Nearby towns or cities or borders are included where possible. When incidents are reported in an unspecified location, this will be noted"
                 },
                 "Latitude":{
-                    "type": "string",
+                    "type": "number",
                     "description": "Guess the latitude of the incident location"
                 },
                 "Longitude":{
-                    "type": "string",
+                    "type": "number",
                     "description": "Guess the longitude of the incident location"
                 }
             },
