@@ -36,6 +36,10 @@ llm_tool = [{
                     "type": "string",
                     "description": "determination of conditions resulting in the migrant's death i.e. the circumstances of the event that produced the fatal injury",
                 },
+                "Region of Incident": {
+                    "type": "string",
+                    "description": "Region where incident occured",
+                },
                 "Country of Incident": {
                     "type": "string",
                     "description": "country where incident occured",

@@ -1,8 +1,8 @@
-from pygooglenews import GoogleNews
+from webscraper.pygooglenews import GoogleNews
 import newspaper
 import datetime
 import pandas as pd
-from llm import llm_create_db_entry
+from webscraper.llm import llm_create_db_entry
 
 
 def get_news_websites(search):
@@ -135,5 +135,5 @@ def filter_and_save(articles):
 #scrape_and_save()
 #articles = load_articles()
 #filter_and_save(articles)
-articles = load_filtered_articles()
-print(llm_create_db_entry(articles.iloc[1]))
+#articles = load_filtered_articles()
+#print(llm_create_db_entry(articles.iloc[1]))
