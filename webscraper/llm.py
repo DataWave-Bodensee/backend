@@ -1,31 +1,6 @@
 from openai import OpenAI
 import json
-from webscraper.db_parameters import llm_tool, db_params
-from database.db_operations import insert_article
-
-def _create_db_entry(args_from_llm, article, summary):
-    """Creates a new entry in the database."""
-    entry = {
-        "title": article.title,
-        "summary": summary, 
-        "website": article.link,
-        "content": article.content,
-        "keywords": article.keywords,
-        "date": args_from_llm["Incident Date"],
-        "number_dead": args_from_llm["Number of Dead"],
-        "number_missing": args_from_llm["Number of Missing"],
-        "number_survivors": args_from_llm["Number of Survivors"],
-        "country_of_origin": args_from_llm["Country of Origin"],
-        "region_of_origin": args_from_llm["Region of Origin"],
-        "cause_of_death": args_from_llm["Cause of Death"],
-        "region_of_incident": args_from_llm["Region of Incident"],
-        "country_of_incident": args_from_llm["Country of Incident"],
-        "location_of_incident": args_from_llm["Location of Incident"],
-        "latitude": args_from_llm["Latitude"],
-        "longitude": args_from_llm["Longitude"]
-    }
-
-    insert_article(entry)
+from db_parameters import llm_tool, db_params
 
 
 def llm_create_db_entry(article):
@@ -72,21 +47,45 @@ def llm_create_db_entry(article):
     response_message_summary = response_summary.choices[0].message.content
 
     if tool_calls:
-        tool_call = tool_calls[
-            0
-        ]  # LLM can possibly make multiple functions calls, only take the first
+        tool_call = tool_calls[0]  # LLM can possibly make multiple functions calls, only take the first
 
         if tool_call.function.name != "create_database_entry":
-            return "Error: Unexpected function call."
+            print("Error: Unexpected function call.")
+            return
         function_args = json.loads(tool_call.function.arguments)
+
+        print(function_args["Relevant"])
+        if function_args["Relevant"] == False:
+            print("Article is not relevant to the database.")
+            return
 
         # Check if all required arguments are present in the function call
         for arg in db_params:
             if arg not in function_args:
-                return f"Error: No {arg} found in the function call. Function call: {function_args}"
+                print (f"Error: No {arg} found in the function call. Function call: {function_args}")
+                return
 
-        _create_db_entry(function_args, article, response_message_summary)
+        entry = {
+            "title": article.title,
+            "summary": response_message_summary, 
+            "website": article.link,
+            "content": article.content,
+            "keywords": article.keywords,
+            "date": function_args["Incident Date"],
+            "number_dead": function_args["Number of Dead"],
+            "number_missing": function_args["Number of Missing"],
+            "number_survivors": function_args["Number of Survivors"],
+            "country_of_origin": function_args["Country of Origin"],
+            "region_of_origin": function_args["Region of Origin"],
+            "cause_of_death": function_args["Cause of Death"],
+            "region_of_incident": function_args["Region of Incident"],
+            "country_of_incident": function_args["Country of Incident"],
+            "location_of_incident": function_args["Location of Incident"],
+            "latitude": function_args["Latitude"],
+            "longitude": function_args["Longitude"]
+        }
 
-        return "Database entry created successfully."
+        return entry
 
-    return "Error: No function call found."
+    print("Error: No function call found.")
+    return

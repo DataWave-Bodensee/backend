@@ -55,7 +55,11 @@ llm_tool = [{
                 "Longitude":{
                     "type": "number",
                     "description": "Guess the longitude of the incident location"
-                }
+                },
+                "Relevant": {
+                    "type": "boolean",
+                    "description": "We are gathering data about migrant deaths and getting missed. If the article is not relevant, set this to false.",
+                },
             },
             "required": [
                 "Region of Incident",
@@ -69,7 +73,8 @@ llm_tool = [{
                 "Country of Incident",
                 "Location of Incident",
                 "Latitude",
-                "Longitude"
+                "Longitude",
+                "Relevant"
             ],
         },
     },
