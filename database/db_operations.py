@@ -233,3 +233,4 @@ article = {
     'longitude': 12.4964
 }
 
+insert_article(article)
