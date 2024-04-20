@@ -6,22 +6,13 @@ from psycopg2 import Error
 
 # Load environment variables from .env file
 load_dotenv()
-
-print(os.getenv('PGHOST'))
-PGHOST = os.getenv('PGHOST')
-PGUSER = os.getenv('PGUSER')
-PGPORT = os.getenv('PGPORT')
-PGDATABASE = os.getenv('PGDATABASE')
-PGPASSWORD = os.getenv('PGPASSWORD')
-
-
 # Parameters for connection
 params = {
-    'host': PGHOST,
-    'user': PGUSER,
-    'password': PGPASSWORD,
-    'port': PGPORT,
-    'dbname': PGDATABASE
+    'host': os.getenv('PGHOST'),
+    'user': os.getenv('PGUSER'),
+    'password': os.getenv('PGPASSWORD'),
+    'port': os.getenv('PGPORT'),
+    'dbname': os.getenv('PGDATABASE')
 }
 
 def delete_table(table_name):
