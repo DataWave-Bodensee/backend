@@ -44,5 +44,3 @@ async def get_articles():
     except Exception as e:
         return {"error": str(e)}
     
-
-@app.get("/articles/")
