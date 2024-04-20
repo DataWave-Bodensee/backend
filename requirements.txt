@@ -1,0 +1,13 @@
+python-dotenv
+uvicorn
+asyncpg
+psycopg2-binary
+fastapi
+pandas
+sqlalchemy
+lxml_html_clean
+openAI
+feedparser
+dateparser
+beautifulsoup4 
+newspaper3k

@@ -15,12 +15,7 @@ params = {
     'password': os.getenv('PGPASSWORD'),
     'port': os.getenv('PGPORT'),
 }
-
-# Create a connection pool
-async def create_pool():
-    return await asyncpg.create_pool(**params)
-
-pool = app.state.pool = create_pool()
+print(params)
 
 @app.get("/")
 async def root():
@@ -28,7 +23,8 @@ async def root():
 
 @app.on_event("startup")
 async def startup():
-    app.state.pool = await create_pool()
+    print(params)
+    app.state.pool = await asyncpg.create_pool(**params)
 
 @app.on_event("shutdown")
 async def shutdown():

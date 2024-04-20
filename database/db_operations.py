@@ -279,4 +279,110 @@ mapping = {
 #insert_article(article)
 #insert_incident(incident)
 
-# write a function to get all articles from the database and group them by
+
+
+import datetime
+
+def days_between(d1, d2):
+    return abs((d2 - d1).days)
+
+def is_close_location(loc1, loc2, threshold=50):  # Dummy function, replace with real calculation
+    return loc1 == loc2  # Simplistic check, you should use a proper geographical distance
+
+def are_similar_articles(article1, article2):
+    date_similarity = days_between(article1[1], article2[1]) <= 3
+    location_similarity = is_close_location(article1[3], article2[3])
+    return date_similarity and location_similarity
+
+
+# write a function to get all articles from the database but only their id, date,  cause of death,  location/region or country of incident
+def get_articles():
+    try:
+        conn = psycopg2.connect(**params)
+        cursor = conn.cursor()
+        cursor.execute("SELECT article_id, date, cause_of_death, location_of_incident, country_of_incident, region_of_incident FROM articles")
+        articles = cursor.fetchall()
+        print(articles)
+        return articles
+    except Exception as e:
+        print("An error occurred:", e)
+    finally:
+        if conn:
+            cursor.close()
+            conn.close()
+        
+get_articles()
+
+
+
+import psycopg2
+import datetime
+
+def days_between(d1, d2):
+    return abs((d2 - d1).days)
+
+def is_close_location(loc1, loc2, threshold=50):  # Dummy function, replace with real geospatial logic
+    return loc1 == loc2  # Simplistic check for demonstration
+
+def are_similar_articles(article1, article2):
+    date_similarity = days_between(article1[1], article2[1]) <= 3
+    location_similarity = is_close_location(article1[3], article2[3])
+    return date_similarity and location_similarity
+
+def group_articles(articles):
+    groups = []
+    used = set()
+    for i, article1 in enumerate(articles):
+        if i in used:
+            continue
+        current_group = [article1[0]]
+        for j, article2 in enumerate(articles[i+1:], start=i+1):
+            if j in used:
+                continue
+            if are_similar_articles(article1, article2):
+                current_group.append(article2[0])
+                used.add(j)
+        groups.append(current_group)
+        used.add(i)
+    return groups
+
+def get_articles():
+    try:
+        conn = psycopg2.connect(**params)
+        cursor = conn.cursor()
+        cursor.execute("SELECT article_id, date, cause_of_death, location_of_incident, country_of_incident, region_of_incident FROM articles")
+        articles = cursor.fetchall()
+        return articles
+    except Exception as e:
+        print("An error occurred:", e)
+    finally:
+        if conn:
+            cursor.close()
+            conn.close()
+
+def update_incident_mappings(grouped_articles):
+    conn = psycopg2.connect(**params)
+    cursor = conn.cursor()
+    try:
+        for group in grouped_articles:
+            # Generate a new incident ID, for demonstration we use UUID
+            cursor.execute("INSERT INTO incidents DEFAULT VALUES RETURNING incident_id")
+            incident_id = cursor.fetchone()[0]
+            for article_id in group:
+                cursor.execute("INSERT INTO article_incident_mapping (article_id, incident_id) VALUES (%s, %s)", (article_id, incident_id))
+        conn.commit()
+    except Exception as e:
+        print("Database update failed:", e)
+        conn.rollback()
+    finally:
+        cursor.close()
+        conn.close()
+
+def process_articles():
+    articles = get_articles()
+    grouped_articles = group_articles(articles)
+    update_incident_mappings(grouped_articles)
+
+# Call this function to process the articles
+process_articles()
+
