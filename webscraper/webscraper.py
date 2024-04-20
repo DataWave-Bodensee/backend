@@ -130,6 +130,7 @@ def filter_and_save(articles):
     keywords = ['refugee', 'death', 'accident', 'the']
     threshold = 3
     filter_on_keywords(articles, keywords, threshold)
+    articles = articles[articles['passed_keyword_filter']]
     articles.to_csv('articles_filtered.csv')
 
 
