@@ -90,8 +90,6 @@ def create_articles_table():
             cursor.close()
             conn.close()
 
-
-
 def create_incidents_table():
     create_table_sql = """
     CREATE TABLE incidents (
@@ -118,10 +116,8 @@ def create_incidents_table():
         # Connect to the database
         conn = psycopg2.connect(**params)
         cursor = conn.cursor()
-
         # Execute the SQL commands
         cursor.execute(create_table_sql)
-
         # Commit the changes in the database
         conn.commit()
         print("Incidents Table created successfully")
@@ -174,7 +170,7 @@ def insert_incident(incident):
             cursor.close()
             conn.close()
 
-# write dummy data for a sigle incident
+# write dummy data for a single incident
 incident = {
     'verified': True,
     'date': '2021-05-06',
@@ -190,9 +186,6 @@ incident = {
     'latitude': 41.9028,
     'longitude': 12.4964
 }
-
-insert_incident(incident)
-
 
 # write a function to get all the incidents
 def get_all_incidents():
