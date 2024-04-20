@@ -74,7 +74,8 @@ def create_articles_table():
     country_of_incident VARCHAR(255),
     location_of_incident TEXT,
     latitude DECIMAL(9,6),
-    longitude DECIMAL(9,6)
+    longitude DECIMAL(9,6),
+    relevant BOOLEAN DEFAULT TRUE
 );
     """
     conn = None
@@ -206,7 +207,6 @@ def get_all_incidents():
             cursor.close()
             conn.close()
 
-
 #delete_table('mapping')
 #delete_table('articles')
 #delete_table('incidents')
@@ -214,7 +214,6 @@ def get_all_incidents():
 #create_articles_table()
 #create_incidents_table()
 #create_mapping_table()
-
 
 # write dummy data for a sigle article
 article = {
