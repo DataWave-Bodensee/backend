@@ -112,8 +112,7 @@ def create_incidents_table():
     latitude DECIMAL(9,6),
     longitude DECIMAL(9,6)
 );
-    """	
-
+    """
     conn = None
     # Connect to the PostgreSQL database
     try:
@@ -174,6 +173,64 @@ def insert_incident(incident):
             cursor.close()
             conn.close()
 
+def insert_mapping(incident_id, article_id):
+    try:
+        conn = psycopg2.connect(**params)
+        cursor = conn.cursor()
+        cursor.execute(
+            """
+            INSERT INTO mapping (incident_id, article_id) 
+            VALUES (%s, %s)
+            """,
+            (incident_id, article_id)
+        )
+        conn.commit()
+        print("Record inserted successfully")
+    except Exception as e:
+        print("An error occurred:", e)
+    finally:
+        if conn:
+            cursor.close()
+            conn.close()
+
+# write a function to get all the incidents
+def get_all_incidents():
+    try:
+        conn = psycopg2.connect(**params)
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM Incidents")
+        incidents = cursor.fetchall()
+        return incidents
+    except Exception as e:
+        print("An error occurred:", e)
+    finally:
+        if conn:
+            cursor.close()
+            conn.close()
+
+def get_all_articles():
+    try:
+        conn = psycopg2.connect(**params)
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM articles")
+        articles = cursor.fetchall()
+        return articles
+    except Exception as e:
+        print("An error occurred:", e)
+    finally:
+        if conn:
+            cursor.close()
+            conn.close()
+
+
+#delete_table('mapping')
+#delete_table('articles')
+#delete_table('incidents')
+
+#create_articles_table()
+#create_incidents_table()
+#create_mapping_table()
+
 # write dummy data for a single incident
 incident = {
     'title': 'Migrant boat capsizes in Mediterranean',
@@ -191,29 +248,6 @@ incident = {
     'latitude': 41.9028,
     'longitude': 12.4964
 }
-
-# write a function to get all the incidents
-def get_all_incidents():
-    try:
-        conn = psycopg2.connect(**params)
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM Incidents")
-        incidents = cursor.fetchall()
-        return incidents
-    except Exception as e:
-        print("An error occurred:", e)
-    finally:
-        if conn:
-            cursor.close()
-            conn.close()
-
-#delete_table('mapping')
-#delete_table('articles')
-#delete_table('incidents')
-
-#create_articles_table()
-#create_incidents_table()
-#create_mapping_table()
 
 # write dummy data for a sigle article
 article = {
@@ -236,5 +270,13 @@ article = {
     'longitude': 12.4964
 }
 
+mapping = {
+    'incident_id': 1,
+    'article_id': 1
+}
+
+#insert_mapping(1, 2)
 #insert_article(article)
 #insert_incident(incident)
+
+# write a function to get all articles from the database and group them by
