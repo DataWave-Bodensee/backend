@@ -94,6 +94,7 @@ def create_incidents_table():
     create_table_sql = """
     CREATE TABLE incidents (
     incident_id SERIAL PRIMARY KEY,
+    title VARCHAR(255),
     verified BOOLEAN,
     date DATE,
     number_dead INTEGER,
@@ -156,10 +157,10 @@ def insert_incident(incident):
         cursor = conn.cursor()
         cursor.execute(
              """
-            INSERT INTO incidents (verified, date, number_dead, number_missing, number_survivors, country_of_origin, region_of_origin, cause_of_death, region_of_incident, country_of_incident, location_of_incident, latitude, longitude) 
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO incidents (title,verified, date, number_dead, number_missing, number_survivors, country_of_origin, region_of_origin, cause_of_death, region_of_incident, country_of_incident, location_of_incident, latitude, longitude) 
+            VALUES (%s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """,
-            (incident['verified'], incident['date'], incident['number_dead'], incident['number_missing'], incident['number_survivors'], incident['country_of_origin'], incident['region_of_origin'], incident['cause_of_death'], incident['region_of_incident'], incident['country_of_incident'], incident['location_of_incident'], incident['latitude'], incident['longitude'])
+            (incident['title'],incident['verified'], incident['date'], incident['number_dead'], incident['number_missing'], incident['number_survivors'], incident['country_of_origin'], incident['region_of_origin'], incident['cause_of_death'], incident['region_of_incident'], incident['country_of_incident'], incident['location_of_incident'], incident['latitude'], incident['longitude'])
         )
         conn.commit()
         print("Record inserted successfully")
@@ -172,6 +173,7 @@ def insert_incident(incident):
 
 # write dummy data for a single incident
 incident = {
+    'title': 'Migrant boat capsizes in Mediterranean',
     'verified': True,
     'date': '2021-05-06',
     'number_dead': 20,
@@ -203,14 +205,9 @@ def get_all_incidents():
             conn.close()
 
 
-
-# insert the incident
-#insert_incident(incident)
-
 #delete_table('mapping')
 #delete_table('articles')
 #delete_table('incidents')
-
 
 #create_articles_table()
 #create_incidents_table()
@@ -236,5 +233,3 @@ article = {
     'longitude': 12.4964
 }
 
-
-# insert_article(article)
