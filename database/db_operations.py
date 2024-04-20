@@ -74,7 +74,8 @@ def create_articles_table():
     country_of_incident VARCHAR(255),
     location_of_incident TEXT,
     latitude DECIMAL(9,6),
-    longitude DECIMAL(9,6)
+    longitude DECIMAL(9,6),
+    relevant BOOLEAN DEFAULT TRUE
 );
     """
     conn = None
@@ -111,8 +112,7 @@ def create_incidents_table():
     latitude DECIMAL(9,6),
     longitude DECIMAL(9,6)
 );
-    """	
-
+    """
     conn = None
     # Connect to the PostgreSQL database
     try:
@@ -173,6 +173,64 @@ def insert_incident(incident):
             cursor.close()
             conn.close()
 
+def insert_mapping(incident_id, article_id):
+    try:
+        conn = psycopg2.connect(**params)
+        cursor = conn.cursor()
+        cursor.execute(
+            """
+            INSERT INTO mapping (incident_id, article_id) 
+            VALUES (%s, %s)
+            """,
+            (incident_id, article_id)
+        )
+        conn.commit()
+        print("Record inserted successfully")
+    except Exception as e:
+        print("An error occurred:", e)
+    finally:
+        if conn:
+            cursor.close()
+            conn.close()
+
+# write a function to get all the incidents
+def get_all_incidents():
+    try:
+        conn = psycopg2.connect(**params)
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM Incidents")
+        incidents = cursor.fetchall()
+        return incidents
+    except Exception as e:
+        print("An error occurred:", e)
+    finally:
+        if conn:
+            cursor.close()
+            conn.close()
+
+def get_all_articles():
+    try:
+        conn = psycopg2.connect(**params)
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM articles")
+        articles = cursor.fetchall()
+        return articles
+    except Exception as e:
+        print("An error occurred:", e)
+    finally:
+        if conn:
+            cursor.close()
+            conn.close()
+
+
+#delete_table('mapping')
+#delete_table('articles')
+#delete_table('incidents')
+
+#create_articles_table()
+#create_incidents_table()
+#create_mapping_table()
+
 # write dummy data for a single incident
 incident = {
     'title': 'Migrant boat capsizes in Mediterranean',
@@ -190,31 +248,6 @@ incident = {
     'latitude': 41.9028,
     'longitude': 12.4964
 }
-
-# write a function to get all the incidents
-def get_all_incidents():
-    try:
-        conn = psycopg2.connect(**params)
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM Incidents")
-        incidents = cursor.fetchall()
-        return incidents
-    except Exception as e:
-        print("An error occurred:", e)
-    finally:
-        if conn:
-            cursor.close()
-            conn.close()
-
-
-#delete_table('mapping')
-#delete_table('articles')
-#delete_table('incidents')
-
-#create_articles_table()
-#create_incidents_table()
-#create_mapping_table()
-
 
 # write dummy data for a sigle article
 article = {
@@ -237,5 +270,119 @@ article = {
     'longitude': 12.4964
 }
 
+mapping = {
+    'incident_id': 1,
+    'article_id': 1
+}
+
+#insert_mapping(1, 2)
 #insert_article(article)
 #insert_incident(incident)
+
+
+
+import datetime
+
+def days_between(d1, d2):
+    return abs((d2 - d1).days)
+
+def is_close_location(loc1, loc2, threshold=50):  # Dummy function, replace with real calculation
+    return loc1 == loc2  # Simplistic check, you should use a proper geographical distance
+
+def are_similar_articles(article1, article2):
+    date_similarity = days_between(article1[1], article2[1]) <= 3
+    location_similarity = is_close_location(article1[3], article2[3])
+    return date_similarity and location_similarity
+
+
+# write a function to get all articles from the database but only their id, date,  cause of death,  location/region or country of incident
+def get_articles():
+    try:
+        conn = psycopg2.connect(**params)
+        cursor = conn.cursor()
+        cursor.execute("SELECT article_id, date, cause_of_death, location_of_incident, country_of_incident, region_of_incident FROM articles")
+        articles = cursor.fetchall()
+        print(articles)
+        return articles
+    except Exception as e:
+        print("An error occurred:", e)
+    finally:
+        if conn:
+            cursor.close()
+            conn.close()
+        
+get_articles()
+
+
+
+import psycopg2
+import datetime
+
+def days_between(d1, d2):
+    return abs((d2 - d1).days)
+
+def is_close_location(loc1, loc2, threshold=50):  # Dummy function, replace with real geospatial logic
+    return loc1 == loc2  # Simplistic check for demonstration
+
+def are_similar_articles(article1, article2):
+    date_similarity = days_between(article1[1], article2[1]) <= 3
+    location_similarity = is_close_location(article1[3], article2[3])
+    return date_similarity and location_similarity
+
+def group_articles(articles):
+    groups = []
+    used = set()
+    for i, article1 in enumerate(articles):
+        if i in used:
+            continue
+        current_group = [article1[0]]
+        for j, article2 in enumerate(articles[i+1:], start=i+1):
+            if j in used:
+                continue
+            if are_similar_articles(article1, article2):
+                current_group.append(article2[0])
+                used.add(j)
+        groups.append(current_group)
+        used.add(i)
+    return groups
+
+def get_articles():
+    try:
+        conn = psycopg2.connect(**params)
+        cursor = conn.cursor()
+        cursor.execute("SELECT article_id, date, cause_of_death, location_of_incident, country_of_incident, region_of_incident FROM articles")
+        articles = cursor.fetchall()
+        return articles
+    except Exception as e:
+        print("An error occurred:", e)
+    finally:
+        if conn:
+            cursor.close()
+            conn.close()
+
+def update_incident_mappings(grouped_articles):
+    conn = psycopg2.connect(**params)
+    cursor = conn.cursor()
+    try:
+        for group in grouped_articles:
+            # Generate a new incident ID, for demonstration we use UUID
+            cursor.execute("INSERT INTO incidents DEFAULT VALUES RETURNING incident_id")
+            incident_id = cursor.fetchone()[0]
+            for article_id in group:
+                cursor.execute("INSERT INTO article_incident_mapping (article_id, incident_id) VALUES (%s, %s)", (article_id, incident_id))
+        conn.commit()
+    except Exception as e:
+        print("Database update failed:", e)
+        conn.rollback()
+    finally:
+        cursor.close()
+        conn.close()
+
+def process_articles():
+    articles = get_articles()
+    grouped_articles = group_articles(articles)
+    update_incident_mappings(grouped_articles)
+
+# Call this function to process the articles
+process_articles()
+
