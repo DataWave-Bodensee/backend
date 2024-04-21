@@ -20,5 +20,4 @@ This is the backend for the Missing Migrants project. It is responsible for proc
 The backend is containerized using `Docker` and deployed on `Microsoft Azure`.
 
 
-
 ![postgres](postgres.png)

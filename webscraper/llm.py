@@ -4,7 +4,37 @@ from webscraper.db_parameters import llm_tool, db_params
 
 
 def llm_create_db_entry(article):
-    """Takes an article as input and creates a new database entry, by utilizing a llm to extract the relevant information."""
+    """
+    Takes an article as input and creates a new database entry, by utilizing a llm to extract the relevant information.
+
+    Args:
+        article (Article): The article object containing the information to be extracted.
+
+    Returns:
+        dict: A dictionary representing the new database entry with the extracted information.
+            The dictionary contains the following keys:
+            - title (str): The title of the article.
+            - summary (str): A summary of the article.
+            - website (str): The link to the article.
+            - content (str): The content of the article.
+            - keywords (list): A list of keywords associated with the article.
+            - date (str): The incident date extracted from the article.
+            - number_dead (int): The number of dead extracted from the article.
+            - number_missing (int): The number of missing extracted from the article.
+            - number_survivors (int): The number of survivors extracted from the article.
+            - country_of_origin (str): The country of origin extracted from the article.
+            - region_of_origin (str): The region of origin extracted from the article.
+            - cause_of_death (str): The cause of death extracted from the article.
+            - region_of_incident (str): The region of incident extracted from the article.
+            - country_of_incident (str): The country of incident extracted from the article.
+            - location_of_incident (str): The location of incident extracted from the article.
+            - latitude (float): The latitude of the incident location extracted from the article.
+            - longitude (float): The longitude of the incident location extracted from the article.
+
+    Raises:
+        None
+
+    """
     client = OpenAI()
 
     # Ask LLM, to call create_database_entry tool by extracting the relevant information from the given article.
