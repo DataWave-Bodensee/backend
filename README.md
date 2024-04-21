@@ -21,4 +21,4 @@ The backend is containerized using `Docker` and deployed on `Microsoft Azure`.
 
 
 
-[postgres](./postgres.png)
+![postgres](postgres.png)
