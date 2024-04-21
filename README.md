@@ -21,3 +21,5 @@ The backend is containerized using `Docker` and deployed on `Microsoft Azure`.
 
 
 
+Weitere Informationen zu PostgreSQL finden Sie in der Datei [postgres.md](./postgres.md).
+
