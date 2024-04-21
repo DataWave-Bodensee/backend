@@ -311,7 +311,7 @@ def get_articles():
             cursor.close()
             conn.close()
         
-get_articles()
+#get_articles()
 
 
 
@@ -384,5 +384,5 @@ def process_articles():
     update_incident_mappings(grouped_articles)
 
 # Call this function to process the articles
-process_articles()
+#process_articles()
 

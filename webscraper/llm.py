@@ -1,6 +1,6 @@
 from openai import OpenAI
 import json
-from db_parameters import llm_tool, db_params
+from webscraper.db_parameters import llm_tool, db_params
 
 
 def llm_create_db_entry(article):

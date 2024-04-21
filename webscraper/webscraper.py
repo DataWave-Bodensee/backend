@@ -1,10 +1,10 @@
-from pygooglenews import GoogleNews
+from webscraper.pygooglenews import GoogleNews
 import newspaper
 import datetime
 import pandas as pd
-from llm import llm_create_db_entry
+from webscraper.llm import llm_create_db_entry
 import ast
-#from database.db_operations import insert_article
+from database.db_operations import insert_article
 
 
 def get_news_websites(search):
@@ -129,6 +129,7 @@ def load_filtered_on_llm_articles():
     # Load the articles from the csv file
     print('Loading articles from csv...')
     articles = pd.read_csv('articles_filtered_on_llm.csv')
+    articles['keywords'] = articles['keywords'].apply(ast.literal_eval)  # Convert string representation of keywords back to list
     return articles
 
 def filter_on_keywords_and_save(articles):
@@ -158,8 +159,8 @@ def write_to_db(articles):
     # Write the articles to the database
     print('Writing articles to the database...')
     for article in articles.itertuples():
-        print(article._asdict().keys())
-        #insert_article(article)
+        article_dict = article._asdict()
+        insert_article(article_dict)
     return
 
 
@@ -168,5 +169,5 @@ def write_to_db(articles):
 #filter_on_keywords_and_save(articles)
 #articles = load_filtered_on_keywords_articles()
 #filter_on_llm_and_save(articles)
-articles = load_filtered_on_llm_articles()
-write_to_db(articles)
+#articles = load_filtered_on_llm_articles()
+#write_to_db(articles)
