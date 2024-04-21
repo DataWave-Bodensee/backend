@@ -15,7 +15,6 @@ params = {
     'password': os.getenv('PGPASSWORD'),
     'port': os.getenv('PGPORT'),
 }
-print(params)
 
 @app.get("/")
 async def root():
@@ -150,7 +149,7 @@ async def get_incident_by_id(incident_id: int):
     try:
         async with app.state.pool.acquire() as connection:
             rows = await connection.fetch('SELECT * FROM incidents where incident_id = $1', incident_id)
-            articles = await connection.fetch('SELECT article_id, website, title FROM articles WHERE article_id IN (SELECT article_id FROM mapping WHERE incident_id = $1)', incident_id)
+            articles = await connection.fetch('SELECT article_id, website, title, date FROM articles WHERE article_id IN (SELECT article_id FROM mapping WHERE incident_id = $1)', incident_id)
             return {"incident": [dict(row) for row in rows], "articles": [dict(row) for row in articles]}
     except Exception as e:
         return {"error": str(e)}
