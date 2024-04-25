@@ -1,25 +1,24 @@
 import asyncpg
-from dotenv import load_dotenv
 import os
 import psycopg2
 from psycopg2.extras import DictCursor
-from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
-from psycopg2 import Error
-import datetime
-'''
+
+"""
 This file contains functions to interact with the PostgreSQL database for debugging and administration.
-'''
+"""
 
 params = {
-    'host': os.environ.get('PGHOST'),
-    'user': os.environ.get('PGUSER'),
-    'password': os.environ.get('PGPASSWORD'),
-    'port': os.environ.get('PGPORT'),
-    'dbname': os.environ.get('PGDATABASE')
+    "host": os.environ.get("PGHOST"),
+    "user": os.environ.get("PGUSER"),
+    "password": os.environ.get("PGPASSWORD"),
+    "port": os.environ.get("PGPORT"),
+    "dbname": os.environ.get("PGDATABASE"),
 }
 
+
 def pool():
-    return  asyncpg.create_pool(**params)
+    return asyncpg.create_pool(**params)
+
 
 def delete_table(table_name):
     """
@@ -44,6 +43,7 @@ def delete_table(table_name):
         if conn:
             cursor.close()
             conn.close()
+
 
 def create_mapping_table():
     """
@@ -81,6 +81,7 @@ def create_mapping_table():
         if conn:
             cursor.close()
             conn.close()
+
 
 def create_articles_table():
     """
@@ -131,6 +132,7 @@ def create_articles_table():
         if conn:
             cursor.close()
             conn.close()
+
 
 def create_incidents_table():
     """
@@ -197,6 +199,7 @@ def create_incidents_table():
             cursor.close()
             conn.close()
 
+
 def insert_article(article):
     """
     Insert an article into the 'articles' table in the database.
@@ -217,8 +220,26 @@ def insert_article(article):
             """
             INSERT INTO articles (title, summary, website, content, keywords, date, number_dead, number_missing, number_survivors, country_of_origin, region_of_origin, cause_of_death, region_of_incident, country_of_incident, location_of_incident, latitude, longitude) 
             VALUES (%s,%s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-            """, 
-            (article['title'], article['summary'], article['website'], article['content'], article['keywords'], article['date'], article['number_dead'], article['number_missing'], article['number_survivors'], article['country_of_origin'], article['region_of_origin'], article['cause_of_death'], article['region_of_incident'], article['country_of_incident'], article['location_of_incident'], article['latitude'], article['longitude'])
+            """,
+            (
+                article["title"],
+                article["summary"],
+                article["website"],
+                article["content"],
+                article["keywords"],
+                article["date"],
+                article["number_dead"],
+                article["number_missing"],
+                article["number_survivors"],
+                article["country_of_origin"],
+                article["region_of_origin"],
+                article["cause_of_death"],
+                article["region_of_incident"],
+                article["country_of_incident"],
+                article["location_of_incident"],
+                article["latitude"],
+                article["longitude"],
+            ),
         )
         conn.commit()
         print("Record inserted successfully")
@@ -262,12 +283,27 @@ def insert_incident(incident):
         conn = psycopg2.connect(**params)
         cursor = conn.cursor()
         cursor.execute(
-             """
+            """
             INSERT INTO incidents (title,verified, date, number_dead, number_missing, number_survivors, country_of_origin, region_of_origin, cause_of_death, region_of_incident, country_of_incident, location_of_incident, latitude, longitude) 
             VALUES (%s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             RETURNING incident_id
             """,
-            (incident['title'],incident['verified'], incident['date'], incident['number_dead'], incident['number_missing'], incident['number_survivors'], incident['country_of_origin'], incident['region_of_origin'], incident['cause_of_death'], incident['region_of_incident'], incident['country_of_incident'], incident['location_of_incident'], incident['latitude'], incident['longitude'])
+            (
+                incident["title"],
+                incident["verified"],
+                incident["date"],
+                incident["number_dead"],
+                incident["number_missing"],
+                incident["number_survivors"],
+                incident["country_of_origin"],
+                incident["region_of_origin"],
+                incident["cause_of_death"],
+                incident["region_of_incident"],
+                incident["country_of_incident"],
+                incident["location_of_incident"],
+                incident["latitude"],
+                incident["longitude"],
+            ),
         )
         incident_id = cursor.fetchone()[0]
         conn.commit()
@@ -279,6 +315,7 @@ def insert_incident(incident):
         if conn:
             cursor.close()
             conn.close()
+
 
 def insert_mapping(incident_id, article_id):
     """
@@ -299,7 +336,7 @@ def insert_mapping(incident_id, article_id):
             INSERT INTO mapping (incident_id, article_id) 
             VALUES (%s, %s)
             """,
-            (incident_id, article_id)
+            (incident_id, article_id),
         )
         conn.commit()
         print("Record inserted successfully")
@@ -331,6 +368,7 @@ def get_all_incidents():
             cursor.close()
             conn.close()
 
+
 def get_all_articles():
     """
     Retrieve all articles from the database.
@@ -351,49 +389,47 @@ def get_all_articles():
             cursor.close()
             conn.close()
 
+
 # dummy data for a single incident
 incident = {
-    'title': 'Migrant boat capsizes in Mediterranean',
-    'verified': True,
-    'date': '2021-05-06',
-    'number_dead': 20,
-    'number_missing': 10,
-    'number_survivors': 30,
-    'country_of_origin': 'Libya',
-    'region_of_origin': 'North Africa',
-    'cause_of_death': 'Drowning',
-    'region_of_incident': 'Mediterranean',
-    'country_of_incident': 'Italy',
-    'location_of_incident': 'Mediterranean Sea',
-    'latitude': 41.9028,
-    'longitude': 12.4964
+    "title": "Migrant boat capsizes in Mediterranean",
+    "verified": True,
+    "date": "2021-05-06",
+    "number_dead": 20,
+    "number_missing": 10,
+    "number_survivors": 30,
+    "country_of_origin": "Libya",
+    "region_of_origin": "North Africa",
+    "cause_of_death": "Drowning",
+    "region_of_incident": "Mediterranean",
+    "country_of_incident": "Italy",
+    "location_of_incident": "Mediterranean Sea",
+    "latitude": 41.9028,
+    "longitude": 12.4964,
 }
 
 # dummy data for a sigle article
 article = {
-    'title': 'Migrant boat capsizes in Mediterranean',
-    'summary': '20 migrants drown after their boat capsizes in the Mediterranean Sea',
-    'website': 'https://www.bbc.com/news/world-africa-57033012',
-    'content': 'The content of the article',
-    'keywords': ['migrant', 'drown', 'boat'],
-    'date': '2021-05-06',
-    'number_dead': 20,
-    'number_missing': 10,
-    'number_survivors': 30,
-    'country_of_origin': 'Libya',
-    'region_of_origin': 'North Africa',
-    'cause_of_death': 'Drowning',
-    'region_of_incident': 'Mediterranean',
-    'country_of_incident': 'Italy',
-    'location_of_incident': 'Mediterranean Sea',
-    'latitude': 41.9028,
-    'longitude': 12.4964
+    "title": "Migrant boat capsizes in Mediterranean",
+    "summary": "20 migrants drown after their boat capsizes in the Mediterranean Sea",
+    "website": "https://www.bbc.com/news/world-africa-57033012",
+    "content": "The content of the article",
+    "keywords": ["migrant", "drown", "boat"],
+    "date": "2021-05-06",
+    "number_dead": 20,
+    "number_missing": 10,
+    "number_survivors": 30,
+    "country_of_origin": "Libya",
+    "region_of_origin": "North Africa",
+    "cause_of_death": "Drowning",
+    "region_of_incident": "Mediterranean",
+    "country_of_incident": "Italy",
+    "location_of_incident": "Mediterranean Sea",
+    "latitude": 41.9028,
+    "longitude": 12.4964,
 }
 
-mapping = {
-    'incident_id': 1,
-    'article_id': 1
-}
+mapping = {"incident_id": 1, "article_id": 1}
 
 
 def days_between(d1, d2):
@@ -409,17 +445,22 @@ def days_between(d1, d2):
     """
     return abs((d2 - d1).days)
 
-def is_close_location(loc1, loc2, threshold=50):  # Dummy function, replace with real geospatial logic
-    pass        # future work: implement this function to check if two locations are close
+
+def is_close_location(
+    loc1, loc2, threshold=50
+):  # Dummy function, replace with real geospatial logic
+    pass  # future work: implement this function to check if two locations are close
+
 
 # Function to group similar articles
 def are_similar_articles(article1, article2):
     date_similarity = days_between(article1[1], article2[1]) <= 3
     return date_similarity
 
-    #future work: 
-    #location_similarity = is_close_location(article1[3], article2[3])
-    #return date_similarity and location_similarity
+    # future work:
+    # location_similarity = is_close_location(article1[3], article2[3])
+    # return date_similarity and location_similarity
+
 
 def group_articles(articles):
     """
@@ -437,7 +478,7 @@ def group_articles(articles):
         if i in used:
             continue
         current_group = [article1[0]]
-        for j, article2 in enumerate(articles[i+1:], start=i+1):
+        for j, article2 in enumerate(articles[i + 1 :], start=i + 1):
             if j in used:
                 continue
             if are_similar_articles(article1, article2):
@@ -447,6 +488,7 @@ def group_articles(articles):
         used.add(i)
     print(groups)
     return groups
+
 
 def get_articles():
     """
@@ -464,7 +506,9 @@ def get_articles():
     try:
         conn = psycopg2.connect(**params)
         cursor = conn.cursor()
-        cursor.execute("SELECT article_id, date, cause_of_death, location_of_incident, country_of_incident, region_of_incident FROM articles")
+        cursor.execute(
+            "SELECT article_id, date, cause_of_death, location_of_incident, country_of_incident, region_of_incident FROM articles"
+        )
         articles = cursor.fetchall()
         print(articles)
         return articles
@@ -474,6 +518,7 @@ def get_articles():
         if conn:
             cursor.close()
             conn.close()
+
 
 def update_incident_mappings(grouped_articles, articles):
     """
@@ -490,29 +535,34 @@ def update_incident_mappings(grouped_articles, articles):
     cursor = conn.cursor(cursor_factory=DictCursor)
     try:
         for group in grouped_articles:
-            cursor.execute('SELECT * FROM articles where article_id = %s',  (str(group[0]),))
+            cursor.execute(
+                "SELECT * FROM articles where article_id = %s", (str(group[0]),)
+            )
             first = cursor.fetchone()
             first_dict = dict(first)
             incident = {
-                'title': first_dict['title'],
-                'verified': True,
-                'date': first_dict['date'],
-                'number_dead': first_dict['number_dead'],
-                'number_missing':  first_dict['number_missing'],
-                'number_survivors': first_dict['number_survivors'],
-                'country_of_origin': first_dict['country_of_origin'],
-                'region_of_origin': first_dict['region_of_origin'],
-                'cause_of_death': first_dict['cause_of_death'],
-                'region_of_incident': first_dict['region_of_incident'],
-                'country_of_incident': first_dict['country_of_incident'],
-                'location_of_incident': first_dict['location_of_incident'],
-                'latitude':first_dict['latitude'],
-                'longitude': first_dict['longitude']
+                "title": first_dict["title"],
+                "verified": True,
+                "date": first_dict["date"],
+                "number_dead": first_dict["number_dead"],
+                "number_missing": first_dict["number_missing"],
+                "number_survivors": first_dict["number_survivors"],
+                "country_of_origin": first_dict["country_of_origin"],
+                "region_of_origin": first_dict["region_of_origin"],
+                "cause_of_death": first_dict["cause_of_death"],
+                "region_of_incident": first_dict["region_of_incident"],
+                "country_of_incident": first_dict["country_of_incident"],
+                "location_of_incident": first_dict["location_of_incident"],
+                "latitude": first_dict["latitude"],
+                "longitude": first_dict["longitude"],
             }
             incident_id = insert_incident(incident)
             print("New incident ID:", incident_id)
             for article_id in group:
-                cursor.execute("INSERT INTO mapping (article_id, incident_id) VALUES (%s, %s)", (article_id, incident_id))
+                cursor.execute(
+                    "INSERT INTO mapping (article_id, incident_id) VALUES (%s, %s)",
+                    (article_id, incident_id),
+                )
         conn.commit()
     except Exception as e:
         print("Database update failed:", e)
@@ -520,6 +570,7 @@ def update_incident_mappings(grouped_articles, articles):
     finally:
         cursor.close()
         conn.close()
+
 
 def process_articles():
     """
@@ -533,14 +584,15 @@ def process_articles():
 
     This function does not return any value.
     """
-    delete_table('mapping')
+    delete_table("mapping")
     create_mapping_table()
     articles = get_articles()
     grouped_articles = group_articles(articles)
     update_incident_mappings(grouped_articles, articles)
 
+
 # Call this function to process the articles
-#process_articles()
+# process_articles()
 
 
 def delete_entries():
@@ -548,13 +600,9 @@ def delete_entries():
     To reset the database, this function deletes entries from the 'mapping', 'articles', and 'incidents' tables.
     Then recreates the 'articles', 'incidents', and 'mapping' tables.
     """
-    delete_table('mapping')
-    delete_table('articles')
-    delete_table('incidents')
+    delete_table("mapping")
+    delete_table("articles")
+    delete_table("incidents")
     create_articles_table()
     create_incidents_table()
     create_mapping_table()
-
-
-
-
