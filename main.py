@@ -1,6 +1,5 @@
 import os
 import asyncpg
-from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from fastapi import FastAPI, HTTPException
 
 app = FastAPI()
@@ -19,7 +18,6 @@ async def root():
 
 @app.on_event("startup")
 async def startup():
-    print(params)
     app.state.pool = await asyncpg.create_pool(**params)
 
 @app.on_event("shutdown")

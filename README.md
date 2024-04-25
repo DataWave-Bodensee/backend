@@ -13,7 +13,8 @@ This is the backend for the Missing Migrants project. It is responsible for proc
 
 1. Clone the repository: `git clone https://github.com/DataWave-Bodensee/backend.git`
 2. Navigate to the project directory: `cd backend`
-3. Start the server: `docker compose up`
+3. Create a '.env' file according to the '.env.example' file
+4. Start the server: `docker compose up`
 
 ## Deployment
 
