@@ -4,7 +4,7 @@ import datetime
 import pandas as pd
 from webscraper.llm import llm_create_db_entry
 import ast
-from database.db_operations import insert_article
+from backend.db_operations import insert_article
 
 
 def get_news_websites(search):

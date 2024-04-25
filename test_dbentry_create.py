@@ -1,5 +1,5 @@
 from webscraper.webscraper import *
-from database.db_operations import insert_article
+from backend.db_operations import insert_article
 
 """Possible scraping operations"""
 #scrape_and_save()

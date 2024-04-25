@@ -196,9 +196,3 @@ async def set_verified_incident(incident_id: int):
             return {"ok"}
     except Exception as e:
         return {"error": str(e)}
-
-
-#get sources() - für indicdentID hol alle corresponding webistes der articles die zu incidenrID gemapped sind in mapping
-# insert mapping
-#incident details should contain
-#articles:  [{ url: 'https://www.bbc.com/news/world-africa-57033012', id: 1, title: 'Migrant boat capsizes in Mediterranean Sea' }]
