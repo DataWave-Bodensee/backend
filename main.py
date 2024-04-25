@@ -1,6 +1,4 @@
-from dotenv import load_dotenv
 import os
-import psycopg2
 import asyncpg
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from fastapi import FastAPI, HTTPException
@@ -8,12 +6,11 @@ from fastapi import FastAPI, HTTPException
 app = FastAPI()
 
 # Parameters for connection
-load_dotenv()
 params = {
-    'host': os.getenv('PGHOST'),
-    'user': os.getenv('PGUSER'),
-    'password': os.getenv('PGPASSWORD'),
-    'port': os.getenv('PGPORT'),
+    'host': os.environ.get('PGHOST'),
+    'user': os.environ.get('PGUSER'),
+    'password': os.environ.get('PGPASSWORD'),
+    'port': os.environ.get('PGPORT'),
 }
 
 @app.get("/")

@@ -1,3 +1,4 @@
+import asyncpg
 from dotenv import load_dotenv
 import os
 import psycopg2
@@ -5,32 +6,30 @@ from psycopg2.extras import DictCursor
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from psycopg2 import Error
 import datetime
+'''
+This file contains functions to interact with the PostgreSQL database for debugging and administration.
+'''
 
-# Load environment variables from .env file
-load_dotenv()
-# Parameters for connection
 params = {
-    'host': os.getenv('PGHOST'),
-    'user': os.getenv('PGUSER'),
-    'password': os.getenv('PGPASSWORD'),
-    'port': os.getenv('PGPORT'),
-    'dbname': os.getenv('PGDATABASE')
+    'host': os.environ.get('PGHOST'),
+    'user': os.environ.get('PGUSER'),
+    'password': os.environ.get('PGPASSWORD'),
+    'port': os.environ.get('PGPORT'),
+    'dbname': os.environ.get('PGDATABASE')
 }
 
+def pool():
+    return  asyncpg.create_pool(**params)
 
 def delete_table(table_name):
     """
     Delete a table from the database.
-
     Args:
         table_name (str): The name of the table to be deleted.
-
     Returns:
         None
-
     Raises:
         Exception: If an error occurs while deleting the table.
-
     """
     conn = None
     try:
